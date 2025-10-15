@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Mưa Trái Tim 20/10 💗</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: radial-gradient(circle at top, #000010, #000);
+    height: 100%;
+  }
+
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  .message {
+    position: absolute;
+    top: 36%;
+    width: 100%;
+    text-align: center;
+    color: #ffb6d5;
+    font-family: 'Dancing Script', cursive;
+    font-size: 58px;
+    font-weight: bold;
+    text-shadow: 0 0 25px #ff6fb0, 0 0 50px #ff4fa3;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .sub-message {
+    position: absolute;
+    top: 52%;
+    width: 100%;
+    text-align: center;
+    color: #ffcce6;
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-style: italic;
+    text-shadow: 0 0 10px #ff8ac8;
+    animation: fade 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 15px #ff6fb4, 0 0 30px #ff3fa0; }
+    to { text-shadow: 0 0 40px #ffb6d5, 0 0 80px #ff5fa9; }
+  }
+
+  @keyframes fade {
+    from { opacity: 0.7; }
+    to { opacity: 1; }
+  }
+
+  audio { display: none; }
+</style>
+</head>
+
+<body>
+
+<canvas id="heartRain"></canvas>
+
+<div class="message">💗 Happy Vietnamese Women’s Day 💗</div>
+<div class="sub-message" id="randomMessage"></div>
+
+<!-- Nhạc nền -->
+<audio id="bgMusic" loop autoplay>
+  <source src="https://cdn.pixabay.com/audio/2024/01/15/audio_4e39ce60f8.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// Danh sách 30 câu chúc ngẫu nhiên
+const messages = [
+  "Chúc bạn luôn xinh đẹp, tự tin và tỏa sáng mỗi ngày 💖",
+  "20/10 vui vẻ nhé! Mong bạn cười nhiều như nắng mai 🌸",
+  "Chúc chị em luôn hạnh phúc và rạng ngời như đóa hoa 🌷",
+  "Chúc bạn có một ngày tràn ngập yêu thương 💕",
+  "20/10 – ngày của những thiên thần xinh đẹp như bạn 😍",
+  "Chúc bạn mãi rạng rỡ, duyên dáng và yêu đời 💗",
+  "Chúc mọi điều tốt đẹp nhất luôn bên bạn 🌹",
+  "Chúc 20/10 đầy tiếng cười và bất ngờ dễ thương 💫",
+  "Bạn là bông hoa đẹp nhất trong vườn yêu thương 🌼",
+  "Chúc bạn luôn vui, khỏe, đẹp và yêu đời 🌻",
+  "20/10 hạnh phúc và lung linh như pháo hoa 🎆",
+  "Chúc bạn một ngày ngọt ngào hơn socola 🍫",
+  "Mong bạn luôn được yêu thương và trân trọng 💞",
+  "Chúc bạn luôn là niềm tự hào của mọi người 💖",
+  "Ngày của bạn – hãy thật rạng ngời nhé 🌟",
+  "Chúc 20/10 của bạn ngập tràn quà và hoa 🎁",
+  "Luôn mỉm cười vì bạn rất xinh khi cười 💋",
+  "20/10 an nhiên, ấm áp và đầy năng lượng tích cực ☀️",
+  "Mong hạnh phúc theo bạn mỗi ngày, không chỉ hôm nay 💫",
+  "Bạn là nữ chính tuyệt vời trong cuộc đời mình 💐",
+  "Chúc bạn như ánh mặt trời, soi sáng quanh ta 🌞",
+  "20/10 này – hãy yêu bản thân hơn nhé 💓",
+  "Một bông hoa đẹp, một tâm hồn đẹp – là bạn 🌺",
+  "Chúc mọi ước mơ của bạn đều thành hiện thực 🌈",
+  "Ngày đặc biệt cho người đặc biệt – chính bạn 💝",
+  "Chúc bạn vui như trẻ con và ngọt như kẹo 🍬",
+  "20/10 thật chill và đáng nhớ nha 😘",
+  "Bạn là món quà tuyệt vời nhất của thế giới này 💞",
+  "Hãy luôn xinh, luôn vui, luôn yêu đời nha 🌷",
+  "20/10 này – chúc bạn đẹp từ trong ra ngoài 💕"
+];
+
+document.getElementById("randomMessage").textContent =
+  messages[Math.floor(Math.random() * messages.length)];
+
+// --- Canvas mưa tim ---
+const canvas = document.getElementById('heartRain');
+const ctx = canvas.getContext('2d');
+let w, h;
+
+function resize() {
+  w = canvas.width = innerWidth;
+  h = canvas.height = innerHeight;
+}
+resize();
+window.onresize = resize;
+
+class Heart {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * w;
+    this.y = Math.random() * -h;
+    this.size = 8 + Math.random() * 12;
+    this.speed = 2 + Math.random() * 5;
+    this.alpha = 0.7 + Math.random() * 0.3;
+  }
+  drawHeart(x, y, size) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(size / 20, size / 20);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(0, -3, -5, -15, -15, -15);
+    ctx.bezierCurveTo(-25, -15, -25, 5, -25, 5);
+    ctx.bezierCurveTo(-25, 15, 0, 30, 0, 45);
+    ctx.bezierCurveTo(0, 30, 25, 15, 25, 5);
+    ctx.bezierCurveTo(25, 5, 25, -15, 15, -15);
+    ctx.bezierCurveTo(5, -15, 0, -3, 0, 0);
+    ctx.fillStyle = `rgba(255, 120, 190, ${this.alpha})`;
+    ctx.shadowColor = 'rgba(255, 120, 190, 0.9)';
+    ctx.shadowBlur = 25;
+    ctx.fill();
+    ctx.restore();
+  }
+  update() {
+    this.y += this.speed;
+    if (this.y > h + 50) this.reset();
+  }
+  draw() { this.drawHeart(this.x, this.y, this.size); }
+}
+
+let hearts = Array.from({ length: 200 }, () => new Heart());
+
+function animate() {
+  ctx.clearRect(0, 0, w, h);
+  for (let hrt of hearts) {
+    hrt.update();
+    hrt.draw();
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+// --- Tự động phát nhạc sau khi user click ---
+const bgMusic = document.getElementById('bgMusic');
+function playMusic() {
+  bgMusic.play().catch(() => {});
+  document.removeEventListener('click', playMusic);
+}
+document.addEventListener('click', playMusic);
+</script>
+</body>
+</html>
